@@ -17,7 +17,7 @@ namespace DapperAspNetCoreAPI.Repository
 
         public async Task<Company> CreateCompany(CompanyForCreationDto company)
         {
-            var query = "INSERT INTO Companies (Name,Address,Country) VALUES (@Name,@Address,@Country)"+
+            var query = "INSERT INTO Companies (Name,Address,Country) VALUES (@Name,@Address,@Country)" +
                 "SELECT CAST(SCOPE_IDENTITY() AS int)";
 
             var parameters = new DynamicParameters();
@@ -25,7 +25,7 @@ namespace DapperAspNetCoreAPI.Repository
             parameters.Add("Address", company.Address, DbType.String);
             parameters.Add("Country", company.Country, DbType.String);
 
-            using(var connection = _context.CreateConnection())
+            using (var connection = _context.CreateConnection())
             {
                 var id = await connection.QuerySingleAsync<int>(query, parameters);
 
@@ -39,8 +39,15 @@ namespace DapperAspNetCoreAPI.Repository
                 return createdCompany;
             }
 
+        }
 
-
+        public async Task DeleteCompany(int id)
+        {
+            var query = "DELETE FROM Companies WHERE Id=@Id";
+                using (var connection = _context.CreateConnection())
+            {
+                await connection.ExecuteAsync(query, new { Id = id });
+            }
         }
 
         public async Task<IEnumerable<Company>> GetCompanies()
@@ -59,9 +66,27 @@ namespace DapperAspNetCoreAPI.Repository
             var query = "SELECT * FROM Companies WHERE Id=@Id";
             using (var connection = _context.CreateConnection())
             {
-                var company = await connection.QuerySingleOrDefaultAsync<Company>(query, new {Id= id });
+                var company = await connection.QuerySingleOrDefaultAsync<Company>(query, new { Id = id });
 
                 return company;
+            }
+
+        }
+
+        public async Task UpdateCompany(int id, CompanyForUpdateDto company)
+        {
+            var query = "UPDATE Companies SET Name=@Name, Address=@Address, Country=@Country WHERE Id=@Id";
+
+            var paramaters = new DynamicParameters();
+            paramaters.Add("Id", id, DbType.Int32);
+            paramaters.Add("Name", company.Name, DbType.String);
+            paramaters.Add("Address", company.Address, DbType.String);
+            paramaters.Add("Country", company.Country, DbType.String);
+
+
+            using (var connection = _context.CreateConnection())
+            {
+                await connection.ExecuteAsync(query, paramaters);
             }
 
         }
