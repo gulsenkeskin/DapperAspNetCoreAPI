@@ -7,13 +7,12 @@ namespace DapperAspNetCoreAPI.Context
     {
         private readonly IConfiguration _configuration;
         private readonly string _connectionString;
-
-        public DapperContext(IConfiguration configuration, string connectionString)
+        public DapperContext(IConfiguration configuration)
         {
             _configuration = configuration;
-            _connectionString = connectionString;   
+            _connectionString = _configuration.GetConnectionString("SqlConnection");
         }
-
-        public IDbConnection CreateConnection() => new SqlConnection(_connectionString);
+        public IDbConnection CreateConnection()
+            => new SqlConnection(_connectionString);
     }
 }
