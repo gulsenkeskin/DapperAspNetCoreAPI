@@ -23,5 +23,17 @@ namespace DapperAspNetCoreAPI.Repository
                 return companies.ToList();
             }
         }
+
+        public async Task<Company> GetCompanyById(int id)
+        {
+            var query = "SELECT * FROM Companies WHERE Id=@Id";
+            using (var connection = _context.CreateConnection())
+            {
+                var company = await connection.QuerySingleOrDefaultAsync<Company>(query, new {Id= id });
+
+                return company;
+            }
+
+        }
     }
 }
