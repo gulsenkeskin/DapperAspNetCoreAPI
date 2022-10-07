@@ -1,10 +1,13 @@
 using DapperAspNetCoreAPI.Context;
+using DapperAspNetCoreAPI.Contracts;
+using DapperAspNetCoreAPI.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddSingleton<DapperContext>();
+builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
