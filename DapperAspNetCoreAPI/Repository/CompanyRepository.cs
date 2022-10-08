@@ -44,7 +44,7 @@ namespace DapperAspNetCoreAPI.Repository
         public async Task DeleteCompany(int id)
         {
             var query = "DELETE FROM Companies WHERE Id=@Id";
-                using (var connection = _context.CreateConnection())
+            using (var connection = _context.CreateConnection())
             {
                 await connection.ExecuteAsync(query, new { Id = id });
             }
@@ -69,7 +69,7 @@ namespace DapperAspNetCoreAPI.Repository
 
             using (var connection = _context.CreateConnection())
             {
-                var company= await connection.QueryFirstOrDefaultAsync<Company>(procedureName, parameters, commandType: CommandType.StoredProcedure);
+                var company = await connection.QueryFirstOrDefaultAsync<Company>(procedureName, parameters, commandType: CommandType.StoredProcedure);
 
                 return company;
             }
@@ -93,14 +93,40 @@ namespace DapperAspNetCoreAPI.Repository
                 "SELECT * FROM Employees WHERE CompanyId=@Id";
 
             using (var connection = _context.CreateConnection())
-            using(var multi=await connection.QueryMultipleAsync(query, new {Id= id }))
+            using (var multi = await connection.QueryMultipleAsync(query, new { Id = id }))
             {
-                var company=await multi.ReadSingleOrDefaultAsync<Company>();
-                if(company is not null)
-                    company.Employees=(await multi.ReadAsync<Employee>()).ToList();
+                var company = await multi.ReadSingleOrDefaultAsync<Company>();
+                if (company is not null)
+                    company.Employees = (await multi.ReadAsync<Employee>()).ToList();
 
                 return company;
             }
+        }
+
+        public async Task<List<Company>> MultipleMapping()
+        {
+            var query = "Select * FROM Companies c JOIN Employees e ON c.Id= e.CompanyId";
+
+            using (var connection = _context.CreateConnection())
+            {
+                var companyDict = new Dictionary<int,Company>();
+
+                //<Company, Employee, Company>:Company, Employeegirsi türleri son tür olan Company dönüş türüdür
+                var companies = await connection.QueryAsync<Company, Employee, Company>(
+                    query, (Company, employee) =>
+                    {
+                        if(!companyDict.TryGetValue(Company.Id,out var currentCompany))
+                        {
+                            currentCompany = Company;
+                            companyDict.Add(currentCompany.Id, currentCompany);
+                        }
+                        currentCompany.Employees.Add(employee);
+                        return currentCompany;
+                    });
+
+                return companies.Distinct().ToList();
+            }
+
         }
 
         public async Task UpdateCompany(int id, CompanyForUpdateDto company)
