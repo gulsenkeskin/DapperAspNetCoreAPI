@@ -1,6 +1,8 @@
 using DapperAspNetCoreAPI.Context;
 using DapperAspNetCoreAPI.Contracts;
+using DapperAspNetCoreAPI.Middlewares;
 using DapperAspNetCoreAPI.Repository;
+using DapperAspNetCoreAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddSingleton<ILoggerService, ConsoleLogger>();
+
 
 var app = builder.Build();
 
@@ -28,5 +33,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCustomExceptionMiddleware();
 
 app.Run();
