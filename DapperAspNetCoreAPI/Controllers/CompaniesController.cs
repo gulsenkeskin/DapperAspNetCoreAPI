@@ -62,5 +62,15 @@ namespace DapperAspNetCoreAPI.Controllers
             return NoContent();
         }
 
+        [HttpGet("ByEmployeeId/{id}")]
+        public async Task<IActionResult> GetCompanyForEmployee(int id)
+        {
+            var company= await _companyRepo.GetCompanyByEmployeeId(id);
+            if(company is null) return NotFound();
+
+            return Ok(company);
+        }
+
+
     }
 }
