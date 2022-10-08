@@ -45,7 +45,7 @@ namespace DapperAspNetCoreAPI.Controllers
         public async Task<IActionResult> UpdateCompany(int id, [FromBody] CompanyForUpdateDto company)
         {
             var dbCompany = await _companyRepo.GetCompanyById(id);
-            if (dbCompany is null) return NotFound();
+            if (dbCompany is null) throw new InvalidOperationException("Güncellenecek Şirket Bulunamadı");
             await _companyRepo.UpdateCompany(id, company);
             return NoContent();
         }
