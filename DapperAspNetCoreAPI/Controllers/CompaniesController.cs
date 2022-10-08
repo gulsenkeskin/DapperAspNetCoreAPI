@@ -71,6 +71,14 @@ namespace DapperAspNetCoreAPI.Controllers
             return Ok(company);
         }
 
+        [HttpGet("{id}/MultipleResult")]
+        public async Task<IActionResult> GetMultipleResults(int id)
+        {
+            var company = await _companyRepo.GetMultipleResults(id);
+            if(company is null) return NotFound();
+
+            return Ok(company);
+        }
 
     }
 }

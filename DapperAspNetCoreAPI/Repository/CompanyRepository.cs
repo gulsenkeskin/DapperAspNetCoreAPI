@@ -87,6 +87,22 @@ namespace DapperAspNetCoreAPI.Repository
 
         }
 
+        public async Task<Company> GetMultipleResults(int id)
+        {
+            var query = "SELECT * FROM Companies WHERE Id=@Id;" +
+                "SELECT * FROM Employees WHERE CompanyId=@Id";
+
+            using (var connection = _context.CreateConnection())
+            using(var multi=await connection.QueryMultipleAsync(query, new {Id= id }))
+            {
+                var company=await multi.ReadSingleOrDefaultAsync<Company>();
+                if(company is not null)
+                    company.Employees=(await multi.ReadAsync<Employee>()).ToList();
+
+                return company;
+            }
+        }
+
         public async Task UpdateCompany(int id, CompanyForUpdateDto company)
         {
             var query = "UPDATE Companies SET Name=@Name, Address=@Address, Country=@Country WHERE Id=@Id";
