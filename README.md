@@ -273,7 +273,7 @@
 ```
 
 
--controller:
+- controller:
 
 ```
         [HttpGet("{id}/MultipleResult")]
