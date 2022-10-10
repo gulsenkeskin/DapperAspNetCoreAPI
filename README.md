@@ -18,7 +18,7 @@
 ```
 
 
--controller:
+- controller:
 
 ```
 
@@ -53,7 +53,7 @@
 ```
 
 
--controller:
+- controller:
 
 ```
 
@@ -106,10 +106,10 @@
 ```
 
 
--controller:
+- controller:
 
 ```
-     [HttpPost]
+        [HttpPost]
         public async Task<IActionResult> CreateCompany([FromBody] CompanyForCreationDto company)
         {
             var createdCompany = await _companyRepo.CreateCompany(company);
@@ -147,10 +147,10 @@
 ```
 
 
--controller:
+- controller:
 
 ```
-     [HttpPut("{id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCompany(int id, [FromBody] CompanyForUpdateDto company)
         {
             var dbCompany = await _companyRepo.GetCompanyById(id);
@@ -181,10 +181,10 @@
 ```
 
 
--controller:
+- controller:
 
 ```
- [HttpDelete("{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCompany(int id)
         {
             var dbCompany = await _companyRepo.GetCompanyById(id);
@@ -227,10 +227,10 @@
 ```
 
 
--controller:
+- controller:
 
 ```
-     [HttpGet("ByEmployeeId/{id}")]
+        [HttpGet("ByEmployeeId/{id}")]
         public async Task<IActionResult> GetCompanyForEmployee(int id)
         {
             var company= await _companyRepo.GetCompanyByEmployeeId(id);
@@ -276,7 +276,7 @@
 -controller:
 
 ```
-   [HttpGet("{id}/MultipleResult")]
+        [HttpGet("{id}/MultipleResult")]
         public async Task<IActionResult> GetMultipleResults(int id)
         {
             var company = await _companyRepo.GetMultipleResults(id);
